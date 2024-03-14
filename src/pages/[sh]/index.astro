@@ -11,6 +11,7 @@ import Layout from "@/layouts/Layout.astro";
 import { Content as TorContent } from "@/platforms/Tor Browser.md";
 import { Content as OnionBrowserContent } from "@/platforms/Onion Browser.md";
 import HeaderText from "@/components/HeaderText.astro";
+import { SEO } from "astro-seo";
 
 export const prerender = false;
 const { sh } = Astro.params;
@@ -34,6 +35,17 @@ const newLink = Astro.url.searchParams.get("new") === "true";
 ---
 
 <Layout title={`clear2onion - ${sh}`}>
+  <SEO
+    slot="seo"
+    description="Someone shared an onion link with you!"
+    openGraph={{
+      basic: {
+        title: `Onion Link Alert! - ${sh}`,
+        image: "/opengraph/shared.png",
+        type: "website",
+      },
+    }}
+  />
   <modal
     id="modal"
     data-active="false"
@@ -109,7 +121,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
       </button>
       <button
         aria-label="Share short link"
-        data-copy-short={Astro.url.href}
+        data-copy-short={Astro.url.href.replace(Astro.url.search, "")}
         id="copy-url-short"
         class="copy-url hover:text-blue-500 duration-100 active:scale-[0.93] scale-[0.98] hover:scale-[1.09] inline-flex"
       >

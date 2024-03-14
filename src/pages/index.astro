@@ -2,9 +2,22 @@
 import Layout from "@/layouts/Layout.astro";
 import Footer from "@/components/Footer.astro";
 import HeaderText from "@/components/HeaderText.astro";
+import { SEO } from "astro-seo";
 ---
 
 <Layout title="clear2onion">
+  <SEO
+    slot="seo"
+    description="clear2onion is an intermediary site between the clearnet and darknet. It allows you to share onion links with people who are not familiar with the darknet. It also provides a simple way to share onion links without having to remember the long and complex onion links."
+    canonical={Astro.site!.hostname}
+    openGraph={{
+      basic: {
+        title: "clear2onion",
+        image: "/opengraph/image.png",
+        type: "website",
+      },
+    }}
+  />
   <main class="w-full h-[90dvh] flex flex-col px-4">
     <section
       class="flex-1 flex flex-col justify-center items-center text-center"
@@ -62,7 +75,7 @@ import HeaderText from "@/components/HeaderText.astro";
       if (data?.status !== "success") {
         throw new Error(data.error || "An error occurred!");
       }
-      const link = `${window.location.origin}/${data.shortUrl}`;
+      const link = `${window.location.origin}/${data.shortUrl}?new=true`;
       window.location.href = link;
     } catch (error) {
       alert(error);

@@ -7,6 +7,8 @@ import svelte from "@astrojs/svelte";
 export default defineConfig({
   site: "https://clear2onion.pages.dev",
   output: "hybrid",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    wasmModuleImports: true
+  }),
   integrations: [tailwind(), svelte()]
 });
