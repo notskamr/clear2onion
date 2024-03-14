@@ -59,13 +59,13 @@ import HeaderText from "@/components/HeaderText.astro";
         body: new FormData(form),
       });
       const data = await res.json();
-      if (!data.status || data.status !== "success") {
-        throw new Error("Failed to create link");
+      if (data?.status !== "success") {
+        throw new Error(data.error || "An error occurred!");
       }
       const link = `${window.location.origin}/${data.shortUrl}`;
       window.location.href = link;
-    } catch {
-      alert("Failed to create link");
+    } catch (error) {
+      alert(error);
       window.location.reload();
     }
   });
