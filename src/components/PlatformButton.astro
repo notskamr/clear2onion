@@ -1,0 +1,38 @@
+---
+interface Props {
+  iconClass?: string;
+  id: string;
+  heading: string;
+  href: string | URL;
+}
+const props = Astro.props;
+---
+
+<button class="platform-button" id={props.id}>
+  <div
+    class:list={[
+      "icon-container w-16 h-16 p-3 rounded-full child:w-full child:h-full",
+      props.iconClass,
+    ]}
+  >
+    <slot name="icon" />
+  </div>
+  <span class="font-medium text-sm">{props.heading}</span>
+</button>
+<content
+  id={`${props.id}-content`}
+  aria-hidden="true"
+  class="hidden"
+  data-href={props.href}
+  data-heading={props.heading}
+>
+  <div class="writeup">
+    <slot name="writeup" />
+  </div>
+</content>
+
+<style>
+  .platform-button {
+    @apply flex flex-col items-center justify-center gap-2 hover:underline text-blue-400 active:scale-[0.97] hover:scale-[1.03] transition-transform duration-100;
+  }
+</style>

@@ -1,0 +1,45 @@
+---
+import { SEO } from "astro-seo";
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <SEO
+      description="clear2onion is an intermediary site that shows how to access a certain onion link."
+      canonical={Astro.site!.hostname}
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-zinc-800 text-black dark:text-white min-h-full overflow-hidden"
+  >
+    <slot />
+    <script>
+      for (var links = document.links, i = 0, a; (a = links[i]); i++) {
+        console.log(a.host);
+        if (
+          a.getAttribute("href")?.endsWith("?newTab=1") ||
+          (a.host !== location.host &&
+            !["", "#"].includes(a.getAttribute("href") || ""))
+        ) {
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+        }
+      }
+    </script>
+  </body>
+</html>

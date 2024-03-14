@@ -1,0 +1,72 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Footer from "@/components/Footer.astro";
+import HeaderText from "@/components/HeaderText.astro";
+---
+
+<Layout title="clear2onion">
+  <main class="w-full h-[90dvh] flex flex-col px-4">
+    <section
+      class="flex-1 flex flex-col justify-center items-center text-center"
+    >
+      <HeaderText />
+      <p class="text-lg mt-4">A simple tool to share onion links with people</p>
+      <!-- take user input for onion link -->
+      <form
+        id="onion-form"
+        class="mt-4 gap-2 w-full flex flex-col sm:flex-row h-fit items-center justify-center"
+      >
+        <input
+          type="text"
+          name="onion"
+          placeholder="Enter an onion link"
+          required
+          class="w-full max-w-sm h-full p-2 border border-gray-300 rounded-md text-black"
+        />
+        <button
+          type="submit"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 active:bg-blue-800"
+        >
+          Share
+        </button>
+      </form>
+    </section>
+  </main>
+  <Footer class="absolute bottom-0" />
+</Layout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#onion-form");
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = form.querySelector("input");
+    const onion = input?.value;
+    if (!onion) {
+      alert("Invalid onion link");
+      window.location.reload();
+      return false;
+    }
+    const url = new URL(onion);
+    if (!url.hostname.endsWith(".onion")) {
+      alert("Invalid onion link");
+      window.location.reload();
+      return false;
+    }
+
+    try {
+      const res = await fetch("/share", {
+        method: "POST",
+        body: new FormData(form),
+      });
+      const data = await res.json();
+      if (!data.status || data.status !== "success") {
+        throw new Error("Failed to create link");
+      }
+      const link = `${window.location.origin}/${data.shortUrl}`;
+      window.location.href = link;
+    } catch {
+      alert("Failed to create link");
+      window.location.reload();
+    }
+  });
+</script>

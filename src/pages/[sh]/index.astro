@@ -1,0 +1,294 @@
+---
+import Footer from "@/components/Footer.astro";
+import CopyDuotone from "@/components/Icons/CopyDuotone.astro";
+import Tor from "@/components/Icons/Tor.astro";
+import OnionBrowser from "@/components/Icons/OnionBrowser.astro";
+import Share from "@/components/Icons/Share.astro";
+import PlatformButton from "@/components/PlatformButton.astro";
+import { turso } from "@/db";
+import Layout from "@/layouts/Layout.astro";
+
+import { Content as TorContent } from "@/platforms/Tor Browser.md";
+import { Content as OnionBrowserContent } from "@/platforms/Onion Browser.md";
+import HeaderText from "@/components/HeaderText.astro";
+
+export const prerender = false;
+const { sh } = Astro.params;
+if (!sh || sh.length !== 6) {
+  return Astro.redirect("/");
+}
+interface Link {
+  short_url: string;
+  long_url: string;
+}
+
+const { rows } = await turso.execute({
+  sql: `SELECT * FROM urls WHERE short_url = ?`,
+  args: [sh],
+});
+
+const link = rows[0] as unknown as Link;
+const { long_url, short_url } = link;
+
+const newLink = Astro.url.searchParams.get("new") === "true";
+---
+
+<Layout title={`clear2onion - ${sh}`}>
+  <modal
+    id="modal"
+    data-active="false"
+    aria-hidden="true"
+    class="w-full h-screen bg-black/40 absolute top-0 left-0 items-center justify-center z-[999] backdrop-blur-[2px]"
+  >
+    <div
+      id="modal-content"
+      class="flex flex-col p-4 px-4 max-w-lg w-[90%] bg-neutral-200 dark:bg-neutral-600 dark:text-white rounded-md"
+    >
+      <header class="flex flex-row justify-between">
+        <h2 class="text-2xl sm:text-3xl font-medium">
+          <a
+            href="#"
+            class="modal_title_link hover:text-blue-400"
+            target="_blank"
+            rel="noopener noreferrer">Modal Text</a
+          >
+        </h2>
+        <button class="text-red-400" aria-label="Close modal" id="close-modal">
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </header>
+      <p class="modal_writeup mt-4 text-base sm:text-lg">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor
+        sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+        ut labore et dolore magna aliqua.
+      </p>
+    </div>
+  </modal>
+  <main
+    class="w-full h-[95vh] flex flex-col px-4 justify-center items-center text-center"
+  >
+    <div
+      class="text-green-500 mb-4 opacity-0 select-none copied-status transition-opacity duration-100"
+    >
+      Copied!
+    </div>
+    <HeaderText />
+    <p class="text-2xl mb-4">
+      {
+        newLink
+          ? "Successfully created a clear2onion link!"
+          : `You've been shared an onion link!`
+      }
+    </p>
+    <div class="flex flex-row items-center justify-center gap-x-1 max-w-sm">
+      <button
+        aria-label="Copy onion link"
+        data-copy-long={long_url}
+        id="copy-url-long"
+        class="copy-url w-[80vw] flex flex-row items-center justify-center gap-x-1 group transition-transform active:scale-[0.98] duration-100 hover:scale-[1.03]"
+      >
+        <div
+          class="p-2 max-w-sm w-[90%] overflow-x-auto url h-fit border rounded-md group-hover:border-blue-500"
+        >
+          {long_url}
+        </div>
+        <CopyDuotone class="w-7 h-7 sm:w-8 sm:h-8 group-hover:text-blue-500" />
+      </button>
+      <button
+        aria-label="Share short link"
+        data-copy-short={Astro.url.href}
+        id="copy-url-short"
+        class="copy-url hover:text-blue-500 duration-100 active:scale-[0.93] scale-[0.98] hover:scale-[1.09] inline-flex"
+      >
+        <Share class="w-7 h-7 sm:w-8 sm:h-8" />
+      </button>
+    </div>
+
+    <section class="mt-8" id="how-to-open">
+      <h2 class="text-2xl font-medium">How to open this link?</h2>
+      <div
+        class="platforms mt-4 flex flex-row gap-y-6 gap-x-4 items-center justify-center flex-wrap"
+      >
+        <PlatformButton
+          iconClass="bg-orange-300"
+          id="tor-button"
+          heading="Tor Browser ⭐️"
+          href="https://www.torproject.org/"
+        >
+          <Tor slot="icon" />
+          <p slot="writeup">
+            <TorContent slot="writeup" />
+          </p>
+        </PlatformButton>
+        <PlatformButton
+          iconClass="bg-amber-300"
+          id="onion-browser-button"
+          heading="Onion Browser"
+          href="https://onionbrowser.org"
+        >
+          <OnionBrowser slot="icon" />
+          <p slot="writeup">
+            <OnionBrowserContent slot="writeup" />
+          </p>
+        </PlatformButton>
+      </div>
+    </section>
+
+    <Footer
+      class="h-[5vh] flex justify-center items-end pb-1 mt-auto absolute bottom-0"
+    />
+  </main>
+
+  <script>
+    const platformButtons =
+      document.querySelectorAll<HTMLButtonElement>(".platform-button");
+
+    const modal = document.getElementById("modal");
+    const modalContent = document.getElementById("modal-content");
+    const modalTitle =
+      document.querySelector<HTMLAnchorElement>(".modal_title_link");
+    const modalWriteup = document.querySelector(".modal_writeup");
+
+    platformButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (
+          !modal ||
+          !modalContent ||
+          !closeModalButton ||
+          !modalTitle ||
+          !modalWriteup
+        ) {
+          return;
+        }
+
+        const id = button.id;
+
+        const content = document.getElementById(`${id}-content`);
+        if (!content) {
+          return;
+        }
+
+        const heading = content.dataset.heading;
+        const writeup = content.querySelector(".writeup");
+        const href = content.dataset.href;
+        modalTitle.textContent = heading || "";
+        modalWriteup.innerHTML = writeup?.innerHTML || "";
+        modalTitle.href = href || "#";
+        modal.dataset.active = "true";
+        modal.setAttribute("aria-hidden", "false");
+      });
+    });
+
+    function closeModal() {
+      if (!modal || !modalContent) {
+        return;
+      }
+      modal.dataset.active = "false";
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    // closing modal logic
+    const closeModalButton = document.getElementById("close-modal");
+
+    closeModalButton?.addEventListener("click", closeModal);
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    });
+  </script>
+
+  <style>
+    .url::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+  <script>
+    const copyURLLongButton =
+      document.querySelector<HTMLButtonElement>("#copy-url-long");
+    const copyStatus = document.querySelector<HTMLDivElement>(".copied-status");
+    let statusTimeout: NodeJS.Timeout;
+    function showStatusText(message: string) {
+      if (!copyStatus) return;
+      copyStatus.textContent = message;
+      copyStatus.classList.add("opacity-100");
+
+      if (statusTimeout) {
+        clearTimeout(statusTimeout);
+      }
+
+      statusTimeout = setTimeout(() => {
+        copyStatus.classList.remove("opacity-100");
+      }, 1000);
+    }
+
+    copyURLLongButton?.addEventListener("click", async () => {
+      if (!copyStatus) return;
+
+      await copyContent(copyURLLongButton.dataset.copyLong);
+      showStatusText("Copied link!");
+    });
+
+    const copyURLShortButton =
+      document.querySelector<HTMLButtonElement>("#copy-url-short");
+    copyURLShortButton?.addEventListener("click", async () => {
+      if (!copyStatus) return;
+
+      await copyContent(copyURLShortButton.dataset.copyShort);
+      showStatusText("Copied short link!");
+    });
+
+    async function copyContent(content?: string) {
+      if (!content) {
+        console.error("No content to copy");
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(content);
+        console.log("Content copied to clipboard");
+        /* Resolved - text copied to clipboard successfully */
+      } catch (err) {
+        console.error("Failed to copy: ", err);
+        /* Rejected - text failed to copy to the clipboard */
+      }
+    }
+  </script>
+
+  <style>
+    #modal[data-active="false"] {
+      @apply hidden;
+    }
+    #modal[data-active="true"] {
+      @apply flex;
+    }
+    #modal #modal-content {
+      @apply hidden;
+    }
+    #modal[data-active="true"] #modal-content {
+      @apply flex;
+    }
+  </style>
+  <style is:global>
+    .modal_writeup a {
+      @apply text-blue-400;
+    }
+  </style>
+</Layout>
