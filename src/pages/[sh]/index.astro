@@ -35,7 +35,7 @@ const { long_url, short_url, custom_name } = link;
 const newLink = Astro.url.searchParams.get("new") === "true";
 ---
 
-<Layout title={`clear2onion - ${sh}`}>
+<Layout title={`clear2onion - ${custom_name || sh}`}>
   <SEO
     slot="seo"
     description="Someone shared an onion link with you!"
