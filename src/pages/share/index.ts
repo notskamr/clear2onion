@@ -22,6 +22,11 @@ export async function POST({ request }: APIContext) {
     if (!url?.hostname?.endsWith(".onion")) {
         return new Response(js({ status: "error", message: "Invalid onion link" }), { status: 400 });
     }
+
+    if (name && name.length > 32) {
+        return new Response(js({ status: "error", message: "Custom name too long" }), { status: 400 });
+    }
+
     const shortUrl = generateShortUrl(6);
     try {
         await turso.execute({
