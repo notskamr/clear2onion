@@ -27,18 +27,27 @@ import { SEO } from "astro-seo";
       <!-- take user input for onion link -->
       <form
         id="onion-form"
-        class="mt-4 gap-2 w-full flex flex-col sm:flex-row h-fit items-center justify-center"
+        class="mt-4 gap-2 w-full max-w-md flex flex-col sm:flex-row h-fit items-center justify-center"
       >
         <input
           type="text"
           name="onion"
           placeholder="Enter an onion link"
+          oninput="this.value !== '' ? document.getElementById('name').classList.remove('hidden') : document.getElementById('name').classList.add('hidden')"
           required
           class="w-full max-w-sm h-full p-2 border border-gray-300 rounded-md text-black"
         />
+        <input
+          type="text"
+          id="name"
+          name="name"
+          maxlength="32"
+          placeholder="Name (optional)"
+          class="w-full sm:w-32 h-full p-2 hidden border border-gray-300 rounded-md text-black"
+        />
         <button
           type="submit"
-          class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 active:bg-blue-800 duration-150 active:scale-95 hover:scale-105"
+          class="bg-blue-500 mt-2 sm:mt-0 text-white px-4 py-2 rounded-md hover:bg-blue-600 active:bg-blue-800 duration-150 active:scale-95 hover:scale-105"
         >
           Share
         </button>
@@ -59,8 +68,15 @@ import { SEO } from "astro-seo";
       window.location.reload();
       return false;
     }
-    const url = new URL(onion);
-    if (!url.hostname.endsWith(".onion")) {
+    let url: URL | null = null;
+
+    try {
+      url = new URL(onion);
+    } catch (e) {
+      console.error("Invalid URL", e);
+    }
+
+    if (!url?.hostname.endsWith(".onion")) {
       alert("Invalid onion link");
       window.location.reload();
       return false;

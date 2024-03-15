@@ -21,6 +21,7 @@ if (!sh || sh.length !== 6) {
 interface Link {
   short_url: string;
   long_url: string;
+  custom_name?: string;
 }
 
 const { rows } = await turso.execute({
@@ -29,7 +30,7 @@ const { rows } = await turso.execute({
 });
 
 const link = rows[0] as unknown as Link;
-const { long_url, short_url } = link;
+const { long_url, short_url, custom_name } = link;
 
 const newLink = Astro.url.searchParams.get("new") === "true";
 ---
@@ -40,7 +41,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
     description="Someone shared an onion link with you!"
     openGraph={{
       basic: {
-        title: `Onion Link Alert! - ${sh}`,
+        title: `Onion Link Alert! - ${custom_name || sh}`,
         image: `${Astro.url.origin}/opengraph/shared.png`,
         type: "website",
       },
@@ -103,14 +104,26 @@ const newLink = Astro.url.searchParams.get("new") === "true";
     >
       Copied!
     </div>
-    <HeaderText />
-    <p class="text-2xl mb-4">
+    <header class="mb-3">
+      <HeaderText />
+      <p class="text-2xl mt-1">
+        {
+          (newLink
+            ? "Successfully created a clear2onion link"
+            : `You've been shared an onion link`) + (custom_name ? ":" : "!")
+        }
+      </p>
       {
-        newLink
-          ? "Successfully created a clear2onion link!"
-          : `You've been shared an onion link!`
+        custom_name ? (
+          <h3 class="text-2xl font-medium underline underline-offset-1 text-red-500 dark:text-red-400">
+            {custom_name}
+          </h3>
+        ) : (
+          ""
+        )
       }
-    </p>
+    </header>
+
     <div class="flex flex-row items-center justify-center gap-x-1 max-w-sm">
       <button
         aria-label="Copy onion link"
