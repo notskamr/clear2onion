@@ -7,7 +7,7 @@ clear2onion is a simple project that serves as an intermediary for onion links b
 - Secure and privacy-focused.
 
 ## Using clear2onion
-[clear2onion site](https://clear2onion.pages.dev)
+[clear2onion site](https://c2o.vsahni.me)
 
 ## Stack
 Astro + Turso + Cloudflare + Tailwind
