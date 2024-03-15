@@ -52,7 +52,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
   <modal
     id="modal"
     aria-hidden="true"
-    class="w-full h-screen overflow-hidden bg-black/40 absolute top-0 left-0 items-center justify-center z-[999] backdrop-blur-[2px]"
+    class="w-full h-screen bg-black/40 absolute top-0 left-0 items-center justify-center z-[999] backdrop-blur-[2px] overflow-hidden"
   >
     <div
       id="modal-content"
@@ -96,7 +96,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
     </div>
   </modal>
   <main
-    class="w-full h-[95vh] flex flex-col px-4 justify-center items-center text-center"
+    class="w-full absolute top-[40%] -translate-y-[40%] flex flex-col px-4 justify-center items-center text-center"
   >
     <div
       aria-hidden="true"
@@ -179,9 +179,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
     </section>
   </main>
 
-  <Footer
-    class="h-[5vh] flex justify-center items-end pb-1 mt-auto absolute bottom-0"
-  />
+  <Footer class="flex justify-center items-end mt-auto absolute bottom-0" />
 
   <script>
     const platformButtons =
