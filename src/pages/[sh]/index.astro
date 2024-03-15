@@ -94,6 +94,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
     class="w-full h-[95vh] flex flex-col px-4 justify-center items-center text-center"
   >
     <div
+      aria-hidden="true"
       class="text-green-500 mb-4 opacity-0 select-none copied-status transition-opacity duration-100"
     >
       Copied!
@@ -241,6 +242,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
       if (!copyStatus) return;
       copyStatus.textContent = message;
       copyStatus.classList.add("opacity-100");
+      copyStatus.setAttribute("aria-hidden", "false");
 
       if (statusTimeout) {
         clearTimeout(statusTimeout);
@@ -248,6 +250,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
 
       statusTimeout = setTimeout(() => {
         copyStatus.classList.remove("opacity-100");
+        copyStatus.setAttribute("aria-hidden", "true");
       }, 1000);
     }
 
