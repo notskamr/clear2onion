@@ -50,7 +50,6 @@ const newLink = Astro.url.searchParams.get("new") === "true";
   />
   <modal
     id="modal"
-    data-active="false"
     aria-hidden="true"
     class="w-full h-screen bg-black/40 absolute top-0 left-0 items-center justify-center z-[999] backdrop-blur-[2px]"
   >
@@ -201,7 +200,6 @@ const newLink = Astro.url.searchParams.get("new") === "true";
         modalTitle.textContent = heading || "";
         modalWriteup.innerHTML = writeup?.innerHTML || "";
         modalTitle.href = href || "#";
-        modal.dataset.active = "true";
         modal.setAttribute("aria-hidden", "false");
       });
     });
@@ -210,7 +208,6 @@ const newLink = Astro.url.searchParams.get("new") === "true";
       if (!modal || !modalContent) {
         return;
       }
-      modal.dataset.active = "false";
       modal.setAttribute("aria-hidden", "true");
     }
 
@@ -287,16 +284,16 @@ const newLink = Astro.url.searchParams.get("new") === "true";
   </script>
 
   <style>
-    #modal[data-active="false"] {
+    #modal[aria-hidden="true"] {
       @apply hidden;
     }
-    #modal[data-active="true"] {
+    #modal[aria-hidden="false"] {
       @apply flex;
     }
     #modal #modal-content {
       @apply hidden;
     }
-    #modal[data-active="true"] #modal-content {
+    #modal[aria-hidden="false"] #modal-content {
       @apply flex;
     }
   </style>
