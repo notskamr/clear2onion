@@ -41,7 +41,7 @@ const newLink = Astro.url.searchParams.get("new") === "true";
     openGraph={{
       basic: {
         title: `Onion Link Alert! - ${sh}`,
-        image: "/opengraph/shared.png",
+        image: `${Astro.url.origin}/opengraph/shared.png`,
         type: "website",
       },
     }}
