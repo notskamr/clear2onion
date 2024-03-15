@@ -1,4 +1,6 @@
 ---
+import GitHub from "./Icons/GitHub.astro";
+
 const props = Astro.props;
 const class_ = props?.class;
 delete props?.class;
@@ -9,12 +11,20 @@ const rest = props;
   class:list={["mt-auto mb-1 w-full text-center opacity-90", class_]}
   {...rest}
 >
-  <span
-    >created by{" "}<a
-      class="text-blue-400 hover:underline"
-      href="https://vsahni.me"
+  <span class="inline-flex flex-row items-center justify-center gap-x-2"
+    ><span
+      >created by{" "}<a
+        class="text-blue-400 hover:text-blue-500 hover:underline"
+        href="https://vsahni.me"
+        rel="noopener noreferrer"
+        target="_blank">varun</a
+      ></span
+    > | <a
+      href="https://github.com/notskamr/clear2onion"
+      target="_blank"
       rel="noopener noreferrer"
-      target="_blank">varun</a
+      class="w-5 relative top-[1px] hover:text-blue-500"
+      ><GitHub class="w-full h-full" /></a
     ></span
   >
 </footer>
