@@ -45,6 +45,8 @@ const newLink = Astro.url.searchParams.get("new") === "true";
         type: "website",
       },
     }}
+    nofollow={true}
+    noindex={true}
   />
   <modal
     id="modal"
