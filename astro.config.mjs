@@ -5,7 +5,7 @@ import svelte from "@astrojs/svelte";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://clear2onion.pages.dev",
+  site: "https://c2o.vsahni.me",
   output: "hybrid",
   adapter: cloudflare({
     wasmModuleImports: true
