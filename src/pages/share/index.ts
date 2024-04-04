@@ -6,34 +6,39 @@ export const prerender = false;
 
 const js = JSON.stringify;
 
+
+const JSONHeaders: HeadersInit = {
+    "content-type": "application/json",
+    // cors all the things
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "access-control-allow-headers": "Content-Type, Authorization",
+};
+
 export async function POST({ request }: APIContext) {
     const formData = await request.formData();
     if (!formData.has("onion")) {
-        return new Response(js({ status: "error", message: "No onion link provided" }), { status: 400, headers: { "Content-Type": "application/json" } });
+        return new Response(js({ status: "error", message: "No onion link provided" }), { status: 400, headers: JSONHeaders });
     }
     const onion = formData.get("onion")?.toString();
     const name = formData.get("name")?.toString() || null;
 
     if (!onion) {
-        return new Response(js({ status: "error", message: "Invalid onion link" }), { status: 400, headers: { "Content-Type": "application/json" } });
+        return new Response(js({ status: "error", message: "Invalid onion link" }), { status: 400, headers: JSONHeaders });
     }
 
     const url = new URL(onion);
     if (!url?.hostname?.endsWith(".onion")) {
         return new Response(js({ status: "error", message: "Invalid onion link" }), {
             status: 400,
-            headers: {
-                "Content-Type": "application/json",
-            }
+            headers: JSONHeaders
         });
     }
 
     if (name && name.length > 32) {
         return new Response(js({ status: "error", message: "Custom name too long" }), {
             status: 400,
-            headers: {
-                "Content-Type": "application/json",
-            }
+            headers: JSONHeaders
         });
     }
 
@@ -47,14 +52,10 @@ export async function POST({ request }: APIContext) {
     catch (error) {
         return new Response(js({ status: "error", message: "Failed to insert into database" }), {
             status: 500,
-            headers: {
-                "Content-Type": "application/json",
-            }
+            headers: JSONHeaders
         });
     }
     return new Response(js({ status: "success", shortUrl }), {
-        status: 201, headers: {
-            "Content-Type": "application/json",
-        }
+        status: 201, headers: JSONHeaders
     });
 }
