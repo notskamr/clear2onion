@@ -16,7 +16,7 @@ import { SEO } from "astro-seo";
 export const prerender = false;
 const { sh } = Astro.params;
 if (!sh || sh.length !== 6) {
-  return Astro.redirect("/");
+  return Astro.redirect("/404");
 }
 interface Link {
   short_url: string;

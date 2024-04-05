@@ -16,18 +16,32 @@ const JSONHeaders: HeadersInit = {
 };
 
 export async function POST({ request }: APIContext) {
-    const formData = await request.formData();
-    if (!formData.has("onion")) {
+    try {
+        var formData = await request.formData();
+    }
+    catch (e) {
+        return new Response(js({ status: "error", message: "Invalid form data" }), {
+            status: 400,
+            headers: JSONHeaders
+        });
+    }
+    if (!(formData?.has("onion"))) {
         return new Response(js({ status: "error", message: "No onion link provided" }), { status: 400, headers: JSONHeaders });
     }
     const onion = formData.get("onion")?.toString();
     const name = formData.get("name")?.toString() || null;
-
     if (!onion) {
         return new Response(js({ status: "error", message: "Invalid onion link" }), { status: 400, headers: JSONHeaders });
     }
-
-    const url = new URL(onion);
+    try {
+        var url = new URL(onion);
+    }
+    catch (e) {
+        return new Response(js({ status: "error", message: "Invalid onion link" }), {
+            status: 400,
+            headers: JSONHeaders
+        });
+    }
     if (!url?.hostname?.endsWith(".onion")) {
         return new Response(js({ status: "error", message: "Invalid onion link" }), {
             status: 400,
