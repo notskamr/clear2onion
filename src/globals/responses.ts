@@ -6,7 +6,7 @@ export const JSONHeaders: HeadersInit = {
     "access-control-allow-headers": "Content-Type, Authorization",
 };
 
-export async function JSONResponse(data: any, init?: ResponseInit) {
+export function JSONResponse(data: any, init?: ResponseInit) {
     return new Response(JSON.stringify(data), {
         ...init,
         headers: {
