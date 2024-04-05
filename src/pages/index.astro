@@ -83,7 +83,7 @@ import { SEO } from "astro-seo";
     }
 
     try {
-      const res = await fetch("/share", {
+      const res = await fetch("/api/create", {
         method: "POST",
         body: new FormData(form),
       });
